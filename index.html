@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Syberia Music AI Remix</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- PDF.js for sheet music viewing -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
+</head>
+<body>
+    <header>
+        <h1>Syberia Music AI Remix</h1>
+        <p>Transform the Syberia Theme using Markov Chains, L-Systems, and Cellular Automata</p>
+    </header>
+
+    <main>
+        <section id="file-upload">
+            <h2>Step 1: Upload or Select Audio</h2>
+            <div class="upload-container">
+                <div id="drop-area">
+                    <p>Drag & drop audio file here or</p>
+                    <input type="file" id="midi-file-input" accept=".mp3,.wav,.ogg,.mid,.midi" hidden>
+                    <button id="file-select-btn">Select File</button>
+                </div>
+                
+                <div class="demo-files">
+                    <h3>Or use the demo file:</h3>
+                    <button class="demo-btn" data-file="syberia-theme.mp3">Syberia Theme</button>
+                </div>
+            </div>
+            
+            <div id="file-info" class="hidden">
+                <h3>File loaded: <span id="filename-display"></span></h3>
+                <button id="play-original"><i class="fas fa-play"></i> Play Original</button>
+                <button id="stop-playback"><i class="fas fa-stop"></i> Stop</button>
+            </div>
+        </section>
+
+        <section id="score-section" class="hidden">
+            <h2>Step 2: Reference Sheet Music</h2>
+            <div class="score-viewer-container">
+                <div id="pdf-viewer"></div>
+                <div class="score-controls">
+                    <button id="prev-page"><i class="fas fa-chevron-left"></i> Previous</button>
+                    <span id="page-num">Page 1 of 1</span>
+                    <button id="next-page">Next <i class="fas fa-chevron-right"></i></button>
+                    <div class="zoom-control">
+                        <label for="zoom-level">Zoom:</label>
+                        <select id="zoom-level">
+                            <option value="0.5">50%</option>
+                            <option value="1" selected>100%</option>
+                            <option value="1.5">150%</option>
+                            <option value="2">200%</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="score-analysis-tools">
+                <h3>Musical Analysis</h3>
+                <div class="analysis-inputs">
+                    <div class="input-group">
+                        <label for="theme-name">Theme Name:</label>
+                        <input type="text" id="theme-name" placeholder="Main Theme">
+                    </div>
+                    <div class="input-group">
+                        <label for="theme-notes">Note Sequence:</label>
+                        <input type="text" id="theme-notes" placeholder="C4,D4,E4,G4">
+                        <button id="add-theme">Add Theme</button>
+                    </div>
+                </div>
+                
+                <div class="instrument-section">
+                    <h4>Instrument Tracks</h4>
+                    <div class="track-list">
+                        <div class="track-item">
+                            <input type="checkbox" id="track-strings" checked>
+                            <label for="track-strings">Strings</label>
+                        </div>
+                        <div class="track-item">
+                            <input type="checkbox" id="track-brass" checked>
+                            <label for="track-brass">Brass</label>
+                        </div>
+                        <div class="track-item">
+                            <input type="checkbox" id="track-woodwinds" checked>
+                            <label for="track-woodwinds">Woodwinds</label>
+                        </div>
+                        <div class="track-item">
+                            <input type="checkbox" id="track-percussion" checked>
+                            <label for="track-percussion">Percussion</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="theme-list"></div>
+                
+                <button id="apply-score-btn">Apply Score Information</button>
+            </div>
+        </section>
+
+        <section id="ai-section" class="hidden">
+            <h2>Step 3: Configure AI Parameters</h2>
+            
+            <div class="ai-types">
+                <div class="ai-option">
+                    <h3>Markov Chain</h3>
+                    <div class="option-settings">
+                        <label for="markov-order">Order:</label>
+                        <select id="markov-order">
+                            <option value="1">1st Order</option>
+                            <option value="2">2nd Order</option>
+                            <option value="3">3rd Order</option>
+                        </select>
+                        
+                        <div class="toggle-container">
+                            <label for="use-markov">Enable:</label>
+                            <label class="switch">
+                                <input type="checkbox" id="use-markov" checked>
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="ai-option">
+                    <h3>L-System</h3>
+                    <div class="option-settings">
+                        <label for="l-system-axiom">Axiom:</label>
+                        <input type="text" id="l-system-axiom" value="A" maxlength="1">
+                        
+                        <label for="l-system-rules">Rules:</label>
+                        <input type="text" id="l-system-rules" value="A→AB,B→A" placeholder="A→AB,B→A">
+                        
+                        <label for="l-system-iterations">Iterations:</label>
+                        <input type="number" id="l-system-iterations" value="2" min="1" max="5">
+                        
+                        <div class="toggle-container">
+                            <label for="use-lsystem">Enable:</label>
+                            <label class="switch">
+                                <input type="checkbox" id="use-lsystem">
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="ai-option">
+                    <h3>Cellular Automata</h3>
+                    <div class="option-settings">
+                        <label for="ca-rule">Rule:</label>
+                        <select id="ca-rule">
+                            <option value="30">Rule 30 (Chaotic)</option>
+                            <option value="90">Rule 90 (Fractal)</option>
+                            <option value="110">Rule 110 (Complex)</option>
+                            <option value="184">Rule 184 (Flowing)</option>
+                        </select>
+                        
+                        <label for="ca-size">Size:</label>
+                        <input type="number" id="ca-size" value="16" min="8" max="32">
+                        
+                        <div class="toggle-container">
+                            <label for="use-ca">Enable:</label>
+                            <label class="switch">
+                                <input type="checkbox" id="use-ca">
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="generate-section">
+                <button id="generate-btn">Generate Remix</button>
+                <div class="loading-spinner hidden"></div>
+            </div>
+        </section>
+
+        <section id="results-section" class="hidden">
+            <h2>Results</h2>
+            
+            <div class="playback-controls">
+                <button id="play-remixed"><i class="fas fa-play"></i> Play Remixed</button>
+                <button id="play-full-remix"><i class="fas fa-play-circle"></i> Play Full Remix</button>
+                <button id="stop-remix-playback"><i class="fas fa-stop"></i> Stop</button>
+                <button id="download-midi"><i class="fas fa-download"></i> Download MIDI</button>
+            </div>
+            
+            <div class="visualization-container">
+                <h3>Piano Roll Comparison</h3>
+                <div class="visualization-controls">
+                    <div class="track-toggles">
+                        <span>Show Tracks: </span>
+                        <label><input type="checkbox" checked data-track="strings"> Strings</label>
+                        <label><input type="checkbox" checked data-track="brass"> Brass</label>
+                        <label><input type="checkbox" checked data-track="woodwinds"> Woodwinds</label>
+                        <label><input type="checkbox" checked data-track="percussion"> Percussion</label>
+                    </div>
+                </div>
+                
+                <div id="piano-roll-container">
+                    <div class="roll-label">Original</div>
+                    <div id="original-piano-roll" class="piano-roll"></div>
+                    <div class="roll-label">Remixed</div>
+                    <div id="remixed-piano-roll" class="piano-roll"></div>
+                </div>
+            </div>
+            
+            <div class="analysis-section">
+                <h3>Analysis</h3>
+                <div id="analysis-content">
+                    <!-- Populated by JavaScript -->
+                </div>
+            </div>
+        </section>
+        
+        <section id="about-section">
+            <h2>About This Project</h2>
+            <div class="about-content">
+                <p>This project allows you to remix the Syberia theme music using three different AI music generation techniques:</p>
+                
+                <div class="technique-info">
+                    <div class="technique">
+                        <h4>Markov Chains</h4>
+                        <p>Markov chains analyze patterns in the original melody to generate new musical sequences that have similar characteristics. Higher-order Markov chains capture longer melodic patterns.</p>
+                    </div>
+                    
+                    <div class="technique">
+                        <h4>L-Systems</h4>
+                        <p>Lindenmayer systems (L-systems) are formal grammars that create fractal-like patterns. Applied to music, they create hierarchical structures with interesting self-similarity at different scales.</p>
+                    </div>
+                    
+                    <div class="technique">
+                        <h4>Cellular Automata</h4>
+                        <p>Cellular automata generate complex patterns from simple rules. In music, they can create evolving rhythmic patterns and textures that develop in interesting ways over time.</p>
+                    </div>
+                </div>
+                
+                <p class="project-info">
+                    This project was created for a Music AI class to demonstrate how different algorithmic composition techniques can be combined to transform existing musical material. It analyzes both audio recordings and sheet music to create musically informed remixes.
+                </p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>Created for Music AI Class - <span id="current-year"></span></p>
+        <a href="https://github.com/yourusername/syberia-music-ai" target="_blank">View on GitHub</a>
+    </footer>
+
+    <!-- Load libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.26/Tone.js"></script>
+    
+    <!-- Load application scripts -->
+    <script src="js/audio-analyzer.js"></script>
+    <script src="js/pitch-detector.js"></script>
+    <script src="js/sheet-music-analyzer.js"></script>
+    <script src="js/markov-chain.js"></script>
+    <script src="js/l-system.js"></script>
+    <script src="js/cellular-automata.js"></script>
+    <script src="js/visualizer.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
